@@ -1,0 +1,8 @@
+
+===QEMU===
+qemu-img create -f qcow2 /home/v1.img 100G
+===LVM===
+fdisk -l
+p
+n
+1
