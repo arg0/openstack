@@ -2,7 +2,38 @@
 ===QEMU===
 qemu-img create -f qcow2 /home/v1.img 100G
 ===LVM===
-fdisk -l
-p
+------------------
+partition.sh 
+------------------
+#!/bin/bash
+
+fdisk /dev/sda &>/dev/null << EOF
 n
+p
 1
+2048
++512M
+n
+p
+2
+1050624
+209715199
+t
+2
+8e
+w
+EOF
+echo "done!"
+--------------
+LVM
+--------------
+pvcreate /dev/sda2
+pvs
+vgcreate lbs /dev/sda2
+vgs
+lvcreate -C y -L 12G lbs -n lvswap
+lvcreate -L 87.49G lbs -n lvroot
+vgchange -a y
+mkfs.ext4 /dev/sda1
+mkfs.ext4 /dev/mapper/lbs-lvroot
+mkswap /dev/mapper/lbs-lvswap
